@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Владимир Новиков](https://up.htmlacademy.ru/javascript/13/user/329499).
-* Наставник: `Неизвестно`.
+* Наставник: Без наставника.
 
 ---
 
