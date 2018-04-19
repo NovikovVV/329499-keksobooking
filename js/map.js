@@ -13,6 +13,7 @@ var MIN_GUESTS = 1;
 var MAX_GUESTS = 3;
 var MAP_PIN_X_OFFSET = 25;
 var MAP_PIN_Y_OFFSET = 70;
+var ESC_KEY_CODE = 27;
 var ROOM_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -47,13 +48,26 @@ var ROOM_PHOTO = [
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
+var MAIN_PIN = {
+  width: 65,
+  height: 82,
+  x: 570,
+  y: 375
+};
 var units = 'px';
 var priceUnits = '₽/ночь';
 var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
+var mainPinElement = document.querySelector('.map__pin--main');
+var mainForm = document.querySelector('.ad-form');
+var inputAddress = document.querySelector('input[name="address"]');
 var pinsArea = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
+
+var getHalf = function (value) {
+  return value / 2;
+};
 
 var getRandomNumberInRange = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -141,8 +155,9 @@ var createMapPins = function (ads) {
   pinsArea.appendChild(fragment);
 };
 
-var createAdCard = function (ads) {
+var createAdCard = function (ad) {
   var adCard = mapCardTemplate.cloneNode(true);
+  var adCardClose = adCard.querySelector('.popup__close');
   var adCardTitle = adCard.querySelector('.popup__title');
   var adCardAddress = adCard.querySelector('.popup__text--address');
   var adCardPrice = adCard.querySelector('.popup__text--price');
@@ -163,16 +178,16 @@ var createAdCard = function (ads) {
     }
 
     featureTemplate.classList.remove(featureTemplate.classList[1]);
-    for (var i = 0; i < ads[0].offer.features.length; i++) {
+    for (var i = 0; i < ad.offer.features.length; i++) {
       var featureItem = featureTemplate.cloneNode(true);
-      featureItem.classList.add('popup__feature--' + ads[0].offer.features[i]);
+      featureItem.classList.add('popup__feature--' + ad.offer.features[i]);
       fragment.appendChild(featureItem);
     }
 
     adCardFeatures.appendChild(fragment);
   };
 
-  var setAdPhoto = function () {
+  var setAdCardPhoto = function () {
     var photoTemplate = adCardPhotos.querySelector('img');
     var fragment = document.createDocumentFragment();
 
@@ -180,16 +195,16 @@ var createAdCard = function (ads) {
       adCardPhotos.removeChild(adCardPhotos.firstChild);
     }
 
-    for (var i = 0; i < ads[0].offer.photos.length; i++) {
+    for (var i = 0; i < ad.offer.photos.length; i++) {
       var photoItem = photoTemplate.cloneNode(true);
-      photoItem.src = ads[0].offer.photos[i];
+      photoItem.src = ad.offer.photos[i];
       fragment.appendChild(photoItem);
     }
 
     adCardPhotos.appendChild(fragment);
   };
 
-  switch (ads[0].offer.type) {
+  switch (ad.offer.type) {
     case 'flat': adCardRoomType.textContent = 'Квартира';
       break;
     case 'bungalo': adCardRoomType.textContent = 'Бунгало';
@@ -199,20 +214,74 @@ var createAdCard = function (ads) {
     case 'palace': adCardRoomType.textContent = 'Дворец';
   }
 
-  adCardTitle.textContent = ads[0].offer.title;
-  adCardAddress.textContent = ads[0].offer.address;
-  adCardPrice.textContent = ads[0].offer.price + priceUnits;
-  adCardCapacity.textContent = ads[0].offer.rooms + ' комнаты для ' + ads[0].offer.guests + ' гостей.';
-  adCardTimes.textContent = 'Заезд после ' + ads[0].offer.checkin + ', выезд после ' + ads[0].offer.checkout;
-  adCardDescription.textContent = ads[0].offer.description;
-  adCardFeatures = setAdCardFeatures(ads);
-  adCardPhotos = setAdPhoto(ads);
-  adCardAvatar.src = ads[0].author.avatar;
+  adCardTitle.textContent = ad.offer.title;
+  adCardAddress.textContent = ad.offer.address;
+  adCardPrice.textContent = ad.offer.price + priceUnits;
+  adCardCapacity.textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей.';
+  adCardTimes.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд после ' + ad.offer.checkout;
+  adCardDescription.textContent = ad.offer.description;
+  adCardFeatures = setAdCardFeatures(ad);
+  adCardPhotos = setAdCardPhoto(ad);
+  adCardAvatar.src = ad.author.avatar;
 
+  adCardClose.addEventListener('click', onAdCardCloseClick);
   map.insertBefore(adCard, mapFiltersContainer);
 };
 
-var adsCollection = createAds(NUMBER_OF_ADS);
-createMapPins(adsCollection);
-createAdCard(adsCollection);
-map.classList.remove('map--faded');
+var setFieldsetsDisableState = function (boolean) {
+  var fieldsets = document.querySelectorAll('fieldset');
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].disabled = boolean;
+  }
+};
+
+var setAddressValue = function (x, y) {
+  inputAddress.value = +x + ', ' + +y;
+};
+
+var addMapPinClickListener = function (pins, objects, i) {
+  var pin = pins[i];
+  var object = objects[i];
+  var onMapPinClick = function () {
+    if (map.children.length < 3) {
+      createAdCard(object);
+    } else if (map.children.length === 3) {
+      map.removeChild(map.children[1]);
+      createAdCard(object);
+    }
+  };
+  pin.addEventListener('click', onMapPinClick);
+};
+
+var onEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE && map.children.length >= 3) {
+    map.removeChild(map.children[1]);
+  }
+};
+
+var onAdCardCloseClick = function () {
+  if (map.children.length >= 3) {
+    map.removeChild(map.children[1]);
+  }
+};
+
+var onMainPinMouseUp = function () {
+  setFieldsetsDisableState(false);
+  map.classList.remove('map--faded');
+  mainForm.classList.remove('ad-form--disabled');
+  setAddressValue(MAIN_PIN.x + Math.round(getHalf(MAIN_PIN.width)), MAIN_PIN.y + MAIN_PIN.height);
+  var adsCollection = createAds(NUMBER_OF_ADS);
+  createMapPins(adsCollection);
+  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+  for (var i = 0; i < mapPins.length; i++) {
+    addMapPinClickListener(mapPins, adsCollection, i);
+  }
+
+  mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
+};
+
+setAddressValue(MAIN_PIN.x + Math.round(getHalf(MAIN_PIN.width)), MAIN_PIN.y + getHalf(MAIN_PIN.height));
+setFieldsetsDisableState(true);
+mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
+document.addEventListener('keydown', onEscPress);
