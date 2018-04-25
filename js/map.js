@@ -232,6 +232,7 @@ var createAdCard = function (ad) {
 
   adCardClose.addEventListener('click', onAdCardCloseClick);
   map.insertBefore(adCard, mapFiltersContainer);
+  document.addEventListener('keydown', onEscPress);
 };
 
 var setFieldsetsDisableState = function (boolean) {
@@ -243,6 +244,19 @@ var setFieldsetsDisableState = function (boolean) {
 
 var setAddressValue = function (x, y) {
   inputAddress.value = +x + ', ' + +y;
+};
+
+var getOffsetRect = function (elem) {
+  var box = elem.getBoundingClientRect();
+  var body = document.body;
+  var docElem = document.documentElement;
+  var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+  var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+  var clientTop = docElem.clientTop || body.clientTop || 0;
+  var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+  var top = box.top + scrollTop - clientTop + 40;
+  var left = box.left + scrollLeft - clientLeft - map.getBoundingClientRect().left;
+  return {x: Math.round(left), y: Math.round(top)};
 };
 
 var addMapPinClickListener = function (pins, objects, i) {
@@ -334,7 +348,50 @@ var onMainPinMouseUp = function () {
   mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
 };
 
+var onMainPinMouseDown = function (evtDown) {
+  evtDown.preventDefault();
+
+  var startCoords = {
+    x: evtDown.clientX,
+    y: evtDown.clientY
+  };
+
+  var mapBorder = {
+    top: map.getBoundingClientRect().top,
+    right: map.getBoundingClientRect().right,
+    bottom: map.getBoundingClientRect().bottom,
+    left: map.getBoundingClientRect().left
+  };
+
+  var onMainPinDragStart = function (evtMove) {
+    evtMove.preventDefault();
+
+    var offset = {
+      x: startCoords.x - evtMove.clientX,
+      y: startCoords.y - evtMove.clientY
+    };
+
+    startCoords.x = evtMove.clientX;
+    startCoords.y = evtMove.clientY;
+    if (evtMove.clientX > mapBorder.left && evtMove.clientX < mapBorder.right && evtMove.clientY > mapBorder.top && evtMove.clientY < mapBorder.bottom) {
+      mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + units;
+      mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + units;
+    }
+  };
+
+  var onMainPinDragEnd = function (evtEnd) {
+    evtEnd.preventDefault();
+
+    setAddressValue(getOffsetRect(mainPinElement).x + Math.round(getHalf(MAIN_PIN.width)), getOffsetRect(mainPinElement).y + getHalf(MAIN_PIN.height));
+    document.removeEventListener('mousemove', onMainPinDragStart);
+    document.removeEventListener('mousedown', onMainPinDragEnd);
+  };
+
+  document.addEventListener('mousemove', onMainPinDragStart);
+  document.addEventListener('mouseup', onMainPinDragEnd);
+};
+
 setAddressValue(MAIN_PIN.x + Math.round(getHalf(MAIN_PIN.width)), MAIN_PIN.y + getHalf(MAIN_PIN.height));
 setFieldsetsDisableState(true);
+mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
 mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
-document.addEventListener('keydown', onEscPress);
