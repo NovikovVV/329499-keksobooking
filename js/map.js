@@ -254,7 +254,7 @@ var getOffsetRect = function (elem) {
   var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
   var clientTop = docElem.clientTop || body.clientTop || 0;
   var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-  var top = box.top + scrollTop - clientTop;
+  var top = box.top + scrollTop - clientTop + 40;
   var left = box.left + scrollLeft - clientLeft - map.getBoundingClientRect().left;
   return {x: Math.round(left), y: Math.round(top)};
 };
@@ -356,6 +356,13 @@ var onMainPinMouseDown = function (evtDown) {
     y: evtDown.clientY
   };
 
+  var mapBorder = {
+    top: map.getBoundingClientRect().top,
+    right: map.getBoundingClientRect().right,
+    bottom: map.getBoundingClientRect().bottom,
+    left: map.getBoundingClientRect().left
+  };
+
   var onMainPinDragStart = function (evtMove) {
     evtMove.preventDefault();
 
@@ -366,9 +373,10 @@ var onMainPinMouseDown = function (evtDown) {
 
     startCoords.x = evtMove.clientX;
     startCoords.y = evtMove.clientY;
-
-    mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + units;
-    mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + units;
+    if (evtMove.clientX > mapBorder.left && evtMove.clientX < mapBorder.right && evtMove.clientY > mapBorder.top && evtMove.clientY < mapBorder.bottom) {
+      mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + units;
+      mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + units;
+    }
   };
 
   var onMainPinDragEnd = function (evtEnd) {
