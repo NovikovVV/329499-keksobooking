@@ -71,37 +71,9 @@ var inputGuestsCapacity = document.querySelector('#capacity');
 var pinsArea = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
 
-var getHalf = function (value) {
-  return value / 2;
-};
-
-var getRandomNumberInRange = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-var shuffle = function (array) {
-  var i = 0;
-  var j = 0;
-  var temp = null;
-  for (i = array.length - 1; i > 0; i -= 1) {
-    j = Math.floor(Math.random() * (i + 1));
-    temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-
-  return array;
-};
-
-var getRandomElement = function (array) {
-  var element = array[Math.floor(Math.random() * array.length)];
-
-  return element;
-};
-
 var setRoomFeatures = function () {
-  var roomFeatures = shuffle(ROOM_FEATURES.slice());
-  roomFeatures.length = getRandomNumberInRange(0, roomFeatures.length);
+  var roomFeatures = window.util.shuffle(ROOM_FEATURES.slice());
+  roomFeatures.length = window.util.getRandomNumberInRange(0, roomFeatures.length);
 
   return roomFeatures;
 };
@@ -115,16 +87,16 @@ var createAds = function (quantity) {
 
     var offer = {
       title: ROOM_TITLES[i],
-      address: getRandomNumberInRange(X_START, X_END) + ', ' + getRandomNumberInRange(Y_START, Y_END),
-      price: getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
-      type: getRandomElement(ROOM_TYPES),
-      rooms: getRandomNumberInRange(MIN_ROOMS, MAX_ROOMS),
-      guests: getRandomNumberInRange(MIN_GUESTS, MAX_GUESTS),
-      checkin: getRandomElement(TIMES),
-      checkout: getRandomElement(TIMES),
+      address: window.util.getRandomNumberInRange(X_START, X_END) + ', ' + window.util.getRandomNumberInRange(Y_START, Y_END),
+      price: window.util.getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
+      type: window.util.getRandomElement(ROOM_TYPES),
+      rooms: window.util.getRandomNumberInRange(MIN_ROOMS, MAX_ROOMS),
+      guests: window.util.getRandomNumberInRange(MIN_GUESTS, MAX_GUESTS),
+      checkin: window.util.getRandomElement(TIMES),
+      checkout: window.util.getRandomElement(TIMES),
       features: setRoomFeatures(),
       description: '',
-      photos: shuffle(ROOM_PHOTO.slice())
+      photos: window.util.shuffle(ROOM_PHOTO.slice())
     };
 
     var location = {
@@ -331,7 +303,7 @@ var setNumberOfGuests = function () {
 var onMainPinMouseUp = function () {
   mainForm.classList.remove('ad-form--disabled');
   setFieldsetsDisableState(false);
-  setAddressValue(MAIN_PIN.x + Math.round(getHalf(MAIN_PIN.width)), MAIN_PIN.y + MAIN_PIN.height);
+  setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + MAIN_PIN.height);
   inputRoomType.addEventListener('click', onInputRoomTypeClick);
   inputTimeIn.addEventListener('click', onTimeInInputClick);
   inputTimeOut.addEventListener('click', onTimeOutInputClick);
@@ -382,7 +354,7 @@ var onMainPinMouseDown = function (evtDown) {
   var onMainPinDragEnd = function (evtEnd) {
     evtEnd.preventDefault();
 
-    setAddressValue(getOffsetRect(mainPinElement).x + Math.round(getHalf(MAIN_PIN.width)), getOffsetRect(mainPinElement).y + getHalf(MAIN_PIN.height));
+    setAddressValue(getOffsetRect(mainPinElement).x + Math.round(window.util.getHalf(MAIN_PIN.width)), getOffsetRect(mainPinElement).y + window.util.getHalf(MAIN_PIN.height));
     document.removeEventListener('mousemove', onMainPinDragStart);
     document.removeEventListener('mousedown', onMainPinDragEnd);
   };
@@ -391,7 +363,7 @@ var onMainPinMouseDown = function (evtDown) {
   document.addEventListener('mouseup', onMainPinDragEnd);
 };
 
-setAddressValue(MAIN_PIN.x + Math.round(getHalf(MAIN_PIN.width)), MAIN_PIN.y + getHalf(MAIN_PIN.height));
+setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + window.util.getHalf(MAIN_PIN.height));
 setFieldsetsDisableState(true);
 mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
 mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
