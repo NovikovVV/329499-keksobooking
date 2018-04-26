@@ -2,30 +2,23 @@
 
 var NUMBER_OF_ADS = 8;
 var ESC_KEY_CODE = 27;
-
-
 var MAIN_PIN = {
   width: 65,
   height: 82,
   x: 570,
   y: 375
 };
-
 var priceUnits = '₽/ночь';
-
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var mainPinElement = document.querySelector('.map__pin--main');
+var cssUnits = 'px';
+var map = document.querySelector('.map');
 var mainForm = document.querySelector('.ad-form');
-var inputAddress = document.querySelector('input[name="address"]');
-var inputRoomType = document.querySelector('#type');
-var inputRoomPrice = document.querySelector('#price');
 var inputTimeIn = document.querySelector('#timein');
 var inputTimeOut = document.querySelector('#timeout');
 var inputNumberOfRooms = document.querySelector('#room_number');
-var inputGuestsCapacity = document.querySelector('#capacity');
-var cssUnits = 'px';
-var map = document.querySelector('.map');
+var inputRoomType = document.querySelector('#type');
 
 var createAdCard = function (ad) {
   var adCard = mapCardTemplate.cloneNode(true);
@@ -101,17 +94,6 @@ var createAdCard = function (ad) {
   document.addEventListener('keydown', onEscPress);
 };
 
-var setFieldsetsDisableState = function (boolean) {
-  var fieldsets = document.querySelectorAll('fieldset');
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].disabled = boolean;
-  }
-};
-
-var setAddressValue = function (x, y) {
-  inputAddress.value = +x + ', ' + +y;
-};
-
 var getOffsetRect = function (elem) {
   var box = elem.getBoundingClientRect();
   var body = document.body;
@@ -151,57 +133,14 @@ var onAdCardCloseClick = function () {
   }
 };
 
-var onTimeInInputClick = function () {
-  var time = inputTimeIn.value;
-  inputTimeOut.value = time;
-};
-
-var onTimeOutInputClick = function () {
-  var time = inputTimeOut.value;
-  inputTimeIn.value = time;
-};
-
-var onInputRoomTypeClick = function () {
-  switch (inputRoomType.value) {
-    case 'flat':
-      inputRoomPrice.placeholder = 1000;
-      inputRoomPrice.min = 1000;
-      break;
-    case 'bungalo':
-      inputRoomPrice.placeholder = 0;
-      inputRoomPrice.min = 0;
-      break;
-    case 'house':
-      inputRoomPrice.placeholder = 5000;
-      inputRoomPrice.min = 5000;
-      break;
-    case 'palace':
-      inputRoomPrice.placeholder = 10000;
-      inputRoomPrice.min = 10000;
-  }
-};
-
-var setNumberOfGuests = function () {
-  for (var i = 0; i < inputGuestsCapacity.length; i++) {
-    inputGuestsCapacity[i].disabled = true;
-    if (inputNumberOfRooms.value === '100' && inputGuestsCapacity[i].value === '0') {
-      inputGuestsCapacity[i].selected = true;
-      inputGuestsCapacity[i].disabled = false;
-    } else if (inputNumberOfRooms.value !== '100' && inputGuestsCapacity[i].value !== '0' && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
-      inputGuestsCapacity[i].selected = true;
-      inputGuestsCapacity[i].disabled = false;
-    }
-  }
-};
-
 var onMainPinMouseUp = function () {
   mainForm.classList.remove('ad-form--disabled');
-  setFieldsetsDisableState(false);
-  setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + MAIN_PIN.height);
-  inputRoomType.addEventListener('click', onInputRoomTypeClick);
-  inputTimeIn.addEventListener('click', onTimeInInputClick);
-  inputTimeOut.addEventListener('click', onTimeOutInputClick);
-  inputNumberOfRooms.addEventListener('click', setNumberOfGuests);
+  window.form.setFieldsetsDisableState(false);
+  window.form.setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + MAIN_PIN.height);
+  inputRoomType.addEventListener('click', window.form.onInputRoomTypeClick);
+  inputTimeIn.addEventListener('click', window.form.onTimeInInputClick);
+  inputTimeOut.addEventListener('click', window.form.onTimeOutInputClick);
+  inputNumberOfRooms.addEventListener('click', window.form.setNumberOfGuests);
 
   var adsCollection = window.pin.createAds(NUMBER_OF_ADS);
   window.pin.createMapPins(adsCollection);
@@ -248,7 +187,7 @@ var onMainPinMouseDown = function (evtDown) {
   var onMainPinDragEnd = function (evtEnd) {
     evtEnd.preventDefault();
 
-    setAddressValue(getOffsetRect(mainPinElement).x + Math.round(window.util.getHalf(MAIN_PIN.width)), getOffsetRect(mainPinElement).y + window.util.getHalf(MAIN_PIN.height));
+    window.form.setAddressValue(getOffsetRect(mainPinElement).x + Math.round(window.util.getHalf(MAIN_PIN.width)), getOffsetRect(mainPinElement).y + window.util.getHalf(MAIN_PIN.height));
     document.removeEventListener('mousemove', onMainPinDragStart);
     document.removeEventListener('mousedown', onMainPinDragEnd);
   };
@@ -257,7 +196,6 @@ var onMainPinMouseDown = function (evtDown) {
   document.addEventListener('mouseup', onMainPinDragEnd);
 };
 
-setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + window.util.getHalf(MAIN_PIN.height));
-setFieldsetsDisableState(true);
+window.form.setAddressValue(MAIN_PIN.x + Math.round(window.util.getHalf(MAIN_PIN.width)), MAIN_PIN.y + window.util.getHalf(MAIN_PIN.height));
 mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
 mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
