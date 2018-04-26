@@ -1,62 +1,18 @@
 'use strict';
 
 var NUMBER_OF_ADS = 8;
-var X_START = 300;
-var X_END = 900;
-var Y_START = 150;
-var Y_END = 500;
-var MIN_PRICE = 1000;
-var MAX_PRICE = 1000000;
-var MIN_ROOMS = 1;
-var MAX_ROOMS = 5;
-var MIN_GUESTS = 1;
-var MAX_GUESTS = 3;
-var MAP_PIN_X_OFFSET = 25;
-var MAP_PIN_Y_OFFSET = 70;
 var ESC_KEY_CODE = 27;
-var ROOM_TITLES = [
-  'Большая уютная квартира',
-  'Маленькая неуютная квартира',
-  'Огромный прекрасный дворец',
-  'Маленький ужасный дворец',
-  'Красивый гостевой домик',
-  'Некрасивый негостеприимный домик',
-  'Уютное бунгало далеко от моря',
-  'Неуютное бунгало по колено в воде'
-];
-var ROOM_TYPES = [
-  'palace',
-  'flat',
-  'house',
-  'bungalo'
-];
-var TIMES = [
-  '12:00',
-  '13:00',
-  '14:00'
-];
-var ROOM_FEATURES = [
-  'wifi',
-  'dishwasher',
-  'parking',
-  'washer',
-  'elevator',
-  'conditioner'
-];
-var ROOM_PHOTO = [
-  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-];
+
+
 var MAIN_PIN = {
   width: 65,
   height: 82,
   x: 570,
   y: 375
 };
-var units = 'px';
+
 var priceUnits = '₽/ночь';
-var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
+
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var mainPinElement = document.querySelector('.map__pin--main');
@@ -68,70 +24,8 @@ var inputTimeIn = document.querySelector('#timein');
 var inputTimeOut = document.querySelector('#timeout');
 var inputNumberOfRooms = document.querySelector('#room_number');
 var inputGuestsCapacity = document.querySelector('#capacity');
-var pinsArea = document.querySelector('.map__pins');
+var cssUnits = 'px';
 var map = document.querySelector('.map');
-
-var setRoomFeatures = function () {
-  var roomFeatures = window.util.shuffle(ROOM_FEATURES.slice());
-  roomFeatures.length = window.util.getRandomNumberInRange(0, roomFeatures.length);
-
-  return roomFeatures;
-};
-
-var createAds = function (quantity) {
-  var ads = [];
-  for (var i = 0; i < quantity; i++) {
-    var author = {
-      avatar: 'img/avatars/user0' + (i + 1) + '.png'
-    };
-
-    var offer = {
-      title: ROOM_TITLES[i],
-      address: window.util.getRandomNumberInRange(X_START, X_END) + ', ' + window.util.getRandomNumberInRange(Y_START, Y_END),
-      price: window.util.getRandomNumberInRange(MIN_PRICE, MAX_PRICE),
-      type: window.util.getRandomElement(ROOM_TYPES),
-      rooms: window.util.getRandomNumberInRange(MIN_ROOMS, MAX_ROOMS),
-      guests: window.util.getRandomNumberInRange(MIN_GUESTS, MAX_GUESTS),
-      checkin: window.util.getRandomElement(TIMES),
-      checkout: window.util.getRandomElement(TIMES),
-      features: setRoomFeatures(),
-      description: '',
-      photos: window.util.shuffle(ROOM_PHOTO.slice())
-    };
-
-    var location = {
-      x: offer.address.slice(0, 3),
-      y: offer.address.slice(5, 8)
-    };
-
-    var ad = {};
-    ad.author = author;
-    ad.offer = offer;
-    ad.location = location;
-
-    ads[i] = ad;
-  }
-
-  return ads;
-};
-
-var createMapPins = function (ads) {
-  var fragment = document.createDocumentFragment();
-
-  for (var i = 0; i < ads.length; i++) {
-    var mapPin = mapPinTemplate.cloneNode(true);
-    var mapPinImg = mapPin.querySelector('img');
-
-    mapPinImg.alt = ads[i].offer.title;
-    mapPinImg.src = ads[i].author.avatar;
-    mapPin.style.left = ads[i].location.x - MAP_PIN_X_OFFSET + units;
-    mapPin.style.top = ads[i].location.y - MAP_PIN_Y_OFFSET + units;
-
-    fragment.appendChild(mapPin);
-  }
-
-  pinsArea.appendChild(fragment);
-};
 
 var createAdCard = function (ad) {
   var adCard = mapCardTemplate.cloneNode(true);
@@ -309,8 +203,8 @@ var onMainPinMouseUp = function () {
   inputTimeOut.addEventListener('click', onTimeOutInputClick);
   inputNumberOfRooms.addEventListener('click', setNumberOfGuests);
 
-  var adsCollection = createAds(NUMBER_OF_ADS);
-  createMapPins(adsCollection);
+  var adsCollection = window.pin.createAds(NUMBER_OF_ADS);
+  window.pin.createMapPins(adsCollection);
   var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   for (var i = 0; i < mapPins.length; i++) {
     addMapPinClickListener(mapPins, adsCollection, i);
@@ -346,8 +240,8 @@ var onMainPinMouseDown = function (evtDown) {
     startCoords.x = evtMove.clientX;
     startCoords.y = evtMove.clientY;
     if (evtMove.clientX > mapBorder.left && evtMove.clientX < mapBorder.right && evtMove.clientY > mapBorder.top && evtMove.clientY < mapBorder.bottom) {
-      mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + units;
-      mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + units;
+      mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + cssUnits;
+      mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + cssUnits;
     }
   };
 
