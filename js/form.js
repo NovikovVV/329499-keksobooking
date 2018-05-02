@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var mainForm = document.querySelector('.ad-form');
+  var successPopup = document.querySelector('.success');
+  var successButton = document.querySelector('.success__button');
+  var errorPopup = document.querySelector('.error');
+  var errorButton = document.querySelector('.error__button');
   var inputAddress = document.querySelector('input[name="address"]');
   var inputRoomType = document.querySelector('#type');
   var inputRoomPrice = document.querySelector('#price');
@@ -9,13 +14,41 @@
   var inputNumberOfRooms = document.querySelector('#room_number');
   var inputGuestsCapacity = document.querySelector('#capacity');
 
+  var onMainFormSuccess = function () {
+    mainForm.reset();
+    window.util.setFieldsetsDisableState(true);
+    window.util.reset();
+
+    successPopup.classList.remove('hidden');
+    successButton.addEventListener('click', function () {
+      successPopup.classList.add('hidden');
+    });
+
+  };
+
+  var onMainFormError = function (errorMessage) {
+    var node = document.createElement('p');
+    node.classList.add('error__status');
+    node.style.fontSize = '50px';
+    node.style.color = '#fff';
+    node.textContent = errorMessage;
+    errorPopup.insertBefore(node, errorButton);
+
+    errorPopup.classList.remove('hidden');
+    errorButton.addEventListener('click', function () {
+      errorPopup.classList.add('hidden');
+      errorPopup.removeChild(node);
+    });
+  };
+
+  var onMainFormSubmit = function (evt) {
+    window.backend.save(new FormData(mainForm), onMainFormSuccess, onMainFormError);
+    evt.preventDefault();
+  };
+
+  mainForm.addEventListener('submit', onMainFormSubmit);
+
   window.form = {
-    setFieldsetsDisableState: function (boolean) {
-      var fieldsets = document.querySelectorAll('fieldset');
-      for (var i = 0; i < fieldsets.length; i++) {
-        fieldsets[i].disabled = boolean;
-      }
-    },
     onTimeInInputClick: function () {
       var time = inputTimeIn.value;
       inputTimeOut.value = time;
