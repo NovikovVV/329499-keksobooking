@@ -23,6 +23,12 @@
     getRandomElement: function (array) {
       var element = array[Math.floor(Math.random() * array.length)];
       return element;
+    },
+    setFieldsetsDisableState: function (boolean) {
+      var fieldsets = document.querySelectorAll('fieldset');
+      for (var i = 0; i < fieldsets.length; i++) {
+        fieldsets[i].disabled = boolean;
+      }
     }
   };
 })();
