@@ -2,6 +2,7 @@
 
 (function () {
   var TIMEOUT = 10000;
+  var STATUS_OK = 200;
 
   window.backend = {
     load: function (onLoad, onError) {
@@ -10,7 +11,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === STATUS_OK) {
           onLoad(xhr.response);
         } else {
           onError('При загрузке объявлений произошла ошибка: ' + xhr.status + ' ' + xhr.statusText);
@@ -33,7 +34,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === STATUS_OK) {
           onLoad();
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

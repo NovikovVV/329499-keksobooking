@@ -6,16 +6,18 @@
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var map = document.querySelector('.map');
   var priceUnits = '₽/ночь';
+  var valueWithPopup = 3;
+  var adCardIndex = 1;
 
   var onAdCardCloseClick = function () {
-    if (map.children.length >= 3) {
-      map.removeChild(map.children[1]);
+    if (map.children.length >= valueWithPopup) {
+      map.removeChild(map.children[adCardIndex]);
     }
   };
 
   var onEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE && map.children.length >= 3) {
-      map.removeChild(map.children[1]);
+    if (evt.keyCode === ESC_KEY_CODE && map.children.length >= valueWithPopup) {
+      map.removeChild(map.children[adCardIndex]);
     }
   };
 
@@ -36,12 +38,13 @@
     var setAdCardFeatures = function () {
       var featureTemplate = adCardFeatures.querySelector('.popup__feature');
       var fragment = document.createDocumentFragment();
+      var secondClassIndex = 1;
 
       while (adCardFeatures.firstChild) {
         adCardFeatures.removeChild(adCardFeatures.firstChild);
       }
 
-      featureTemplate.classList.remove(featureTemplate.classList[1]);
+      featureTemplate.classList.remove(featureTemplate.classList[secondClassIndex]);
       for (var i = 0; i < ad.offer.features.length; i++) {
         var featureItem = featureTemplate.cloneNode(true);
         featureItem.classList.add('popup__feature--' + ad.offer.features[i]);

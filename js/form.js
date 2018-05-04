@@ -6,19 +6,20 @@
   var successButton = document.querySelector('.success__button');
   var errorPopup = document.querySelector('.error');
   var errorButton = document.querySelector('.error__button');
-  var inputAddress = document.querySelector('input[name="address"]');
+  var resetButton = document.querySelector('.ad-form__reset');
   var inputRoomType = document.querySelector('#type');
   var inputRoomPrice = document.querySelector('#price');
   var inputTimeIn = document.querySelector('#timein');
   var inputTimeOut = document.querySelector('#timeout');
   var inputNumberOfRooms = document.querySelector('#room_number');
   var inputGuestsCapacity = document.querySelector('#capacity');
+  var flatMinPrice = 1000;
+  var bungaloMinPrice = 0;
+  var houseMinPrice = 5000;
+  var palaceMinPrice = 10000;
 
   var onMainFormSuccess = function () {
-    mainForm.reset();
-    window.util.setFieldsetsDisableState(true);
-    window.util.reset();
-
+    window.resetPage();
     successPopup.classList.remove('hidden');
     successButton.addEventListener('click', function () {
       successPopup.classList.add('hidden');
@@ -47,6 +48,7 @@
   };
 
   mainForm.addEventListener('submit', onMainFormSubmit);
+  resetButton.addEventListener('click', window.resetPage);
 
   window.form = {
     onTimeInInputClick: function () {
@@ -60,20 +62,20 @@
     onInputRoomTypeClick: function () {
       switch (inputRoomType.value) {
         case 'flat':
-          inputRoomPrice.placeholder = 1000;
-          inputRoomPrice.min = 1000;
+          inputRoomPrice.placeholder = flatMinPrice;
+          inputRoomPrice.min = flatMinPrice;
           break;
         case 'bungalo':
-          inputRoomPrice.placeholder = 0;
-          inputRoomPrice.min = 0;
+          inputRoomPrice.placeholder = bungaloMinPrice;
+          inputRoomPrice.min = bungaloMinPrice;
           break;
         case 'house':
-          inputRoomPrice.placeholder = 5000;
-          inputRoomPrice.min = 5000;
+          inputRoomPrice.placeholder = houseMinPrice;
+          inputRoomPrice.min = houseMinPrice;
           break;
         case 'palace':
-          inputRoomPrice.placeholder = 10000;
-          inputRoomPrice.min = 10000;
+          inputRoomPrice.placeholder = palaceMinPrice;
+          inputRoomPrice.min = palaceMinPrice;
       }
     },
     setNumberOfGuests: function () {
@@ -87,9 +89,6 @@
           inputGuestsCapacity[i].disabled = false;
         }
       }
-    },
-    setAddressValue: function (x, y) {
-      inputAddress.value = +x + ', ' + +y;
     }
   };
 })();

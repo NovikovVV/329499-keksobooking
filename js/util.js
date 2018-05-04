@@ -1,14 +1,6 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
-  var mainForm = document.querySelector('.ad-form');
-  var mainPin = document.querySelector('.map__pin--main');
-  var mainPinStartX = 603;
-  var mainPinStartY = 416;
-  var cssUnits = 'px';
-  var inputAddress = document.querySelector('input[name="address"]');
-
   window.util = {
     getHalf: function (value) {
       return value / 2;
@@ -37,13 +29,6 @@
       for (var i = 0; i < fieldsets.length; i++) {
         fieldsets[i].disabled = boolean;
       }
-    },
-    reset: function () {
-      mainPin.style.top = mainPinStartY + cssUnits;
-      mainPin.style.left = mainPinStartX + cssUnits;
-      inputAddress.value = mainPinStartX + ', ' + mainPinStartY;
-      map.classList.add('map--faded');
-      mainForm.classList.add('ad-form--disabled');
     }
   };
 })();
