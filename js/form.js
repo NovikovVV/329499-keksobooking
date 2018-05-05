@@ -13,10 +13,6 @@
   var inputTimeOut = document.querySelector('#timeout');
   var inputNumberOfRooms = document.querySelector('#room_number');
   var inputGuestsCapacity = document.querySelector('#capacity');
-  var flatMinPrice = 1000;
-  var bungaloMinPrice = 0;
-  var houseMinPrice = 5000;
-  var palaceMinPrice = 10000;
   var roomPriceMap = {
     'flat': 1000,
     'bungalo': 0,
