@@ -17,6 +17,12 @@
   var bungaloMinPrice = 0;
   var houseMinPrice = 5000;
   var palaceMinPrice = 10000;
+  var roomPriceMap = {
+    'flat': 1000,
+    'bungalo': 0,
+    'house': 5000,
+    'palace': 10000
+  };
 
   var onMainFormSuccess = function () {
     window.resetPage();
@@ -60,23 +66,9 @@
       inputTimeIn.value = time;
     },
     onInputRoomTypeClick: function () {
-      switch (inputRoomType.value) {
-        case 'flat':
-          inputRoomPrice.placeholder = flatMinPrice;
-          inputRoomPrice.min = flatMinPrice;
-          break;
-        case 'bungalo':
-          inputRoomPrice.placeholder = bungaloMinPrice;
-          inputRoomPrice.min = bungaloMinPrice;
-          break;
-        case 'house':
-          inputRoomPrice.placeholder = houseMinPrice;
-          inputRoomPrice.min = houseMinPrice;
-          break;
-        case 'palace':
-          inputRoomPrice.placeholder = palaceMinPrice;
-          inputRoomPrice.min = palaceMinPrice;
-      }
+      var value = inputRoomType.value;
+      inputRoomPrice.placeholder = roomPriceMap[value];
+      inputRoomPrice.min = roomPriceMap[value];
     },
     setNumberOfGuests: function () {
       for (var i = 0; i < inputGuestsCapacity.length; i++) {
