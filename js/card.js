@@ -34,6 +34,12 @@
     var adCardDescription = adCard.querySelector('.popup__description');
     var adCardPhotos = adCard.querySelector('.popup__photos');
     var adCardAvatar = adCard.querySelector('.popup__avatar');
+    var roomTypesMap = {
+      'flat': 'Квартира',
+      'bungalo': 'Бунгало',
+      'house': 'Домик',
+      'palace': 'Дворец'
+    };
 
     var setAdCardFeatures = function () {
       var featureTemplate = adCardFeatures.querySelector('.popup__feature');
@@ -71,16 +77,7 @@
       adCardPhotos.appendChild(fragment);
     };
 
-    switch (ad.offer.type) {
-      case 'flat': adCardRoomType.textContent = 'Квартира';
-        break;
-      case 'bungalo': adCardRoomType.textContent = 'Бунгало';
-        break;
-      case 'house': adCardRoomType.textContent = 'Домик';
-        break;
-      case 'palace': adCardRoomType.textContent = 'Дворец';
-    }
-
+    adCardRoomType.textContent = roomTypesMap[ad.offer.type];
     adCardTitle.textContent = ad.offer.title;
     adCardAddress.textContent = ad.offer.address;
     adCardPrice.textContent = ad.offer.price + priceUnits;
