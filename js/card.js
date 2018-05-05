@@ -12,12 +12,14 @@
   var onAdCardCloseClick = function () {
     if (map.children.length >= valueWithPopup) {
       map.removeChild(map.children[adCardIndex]);
+      document.removeEventListener('keydown', onEscPress);
     }
   };
 
   var onEscPress = function (evt) {
     if (evt.keyCode === ESC_KEY_CODE && map.children.length >= valueWithPopup) {
       map.removeChild(map.children[adCardIndex]);
+      document.removeEventListener('keydown', onEscPress);
     }
   };
 
@@ -42,6 +44,11 @@
     };
 
     var setAdCardFeatures = function () {
+      if (ad.offer.features.length === 0) {
+        adCard.removeChild(adCardFeatures);
+        return;
+      }
+
       var featureTemplate = adCardFeatures.querySelector('.popup__feature');
       var fragment = document.createDocumentFragment();
       var secondClassIndex = 1;
@@ -61,6 +68,11 @@
     };
 
     var setAdCardPhoto = function () {
+      if (ad.offer.photos.length === 0) {
+        adCard.removeChild(adCardPhotos);
+        return;
+      }
+
       var photoTemplate = adCardPhotos.querySelector('img');
       var fragment = document.createDocumentFragment();
 
@@ -84,8 +96,8 @@
     adCardCapacity.textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей.';
     adCardTimes.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд после ' + ad.offer.checkout;
     adCardDescription.textContent = ad.offer.description;
-    adCardFeatures = setAdCardFeatures(ad);
-    adCardPhotos = setAdCardPhoto(ad);
+    adCardFeatures = setAdCardFeatures();
+    adCardPhotos = setAdCardPhoto();
     adCardAvatar.src = ad.author.avatar;
     adCardClose.addEventListener('click', onAdCardCloseClick);
     map.insertBefore(adCard, mapFiltersContainer);
