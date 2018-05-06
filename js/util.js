@@ -27,11 +27,11 @@
       var element = array[Math.floor(Math.random() * array.length)];
       return element;
     },
-    setFieldsetsDisableState: function (boolean) {
-      var fieldsets = document.querySelectorAll('fieldset');
-      for (var i = 0; i < fieldsets.length; i++) {
-        fieldsets[i].disabled = boolean;
-      }
+    setFormInputsState: function (form, boolean) {
+      var elements = Array.from(form.elements);
+      elements.forEach(function (it) {
+        it.disabled = boolean;
+      });
     },
     debounce: function (func) {
       if (lastTimeout) {
