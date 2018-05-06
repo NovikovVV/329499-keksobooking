@@ -1,5 +1,13 @@
 'use strict';
 
+/*
+Здравствуй дорогой друг!
+Отдаю свой проект на проверку в твои надежные руки.
+Надеюсь в процессе тебе не захочется оторвать мне руки за написанный код :)
+Если будет возможность - дай пожалуйста несколько советов с высоты своего опыта, я буду тебе безмерно благодарен!
+Хорошего тебе настроения!
+*/
+
 (function () {
   var MAIN_PIN = {
     width: 65,
@@ -69,7 +77,8 @@
 
   var onMainPinMouseUp = function () {
     mainForm.classList.remove('ad-form--disabled');
-    window.util.setFieldsetsDisableState(false);
+    window.util.setFormInputsState(mainForm, false);
+    window.util.setFormInputsState(filters, false);
     inputRoomType.addEventListener('change', window.form.onInputRoomTypeChange);
     inputTimeIn.addEventListener('change', window.form.onTimeInInputChange);
     inputTimeOut.addEventListener('change', window.form.onTimeOutInputChange);
@@ -123,8 +132,9 @@
     document.addEventListener('mouseup', onMainPinDragEnd);
   };
 
+  window.util.setFormInputsState(mainForm, true);
+  window.util.setFormInputsState(filters, true);
   inputAddress.value = getMainPinCoords();
-  window.util.setFieldsetsDisableState(true);
   mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
   mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
 
@@ -133,12 +143,15 @@
     mainForm.reset();
     filters.reset();
     mainForm.classList.add('ad-form--disabled');
-    window.util.setFieldsetsDisableState(true);
+    window.util.setFormInputsState(mainForm, true);
+    window.util.setFormInputsState(filters, true);
     mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
     mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
 
     mainPinElement.style.top = MAIN_PIN.y + cssUnits;
     mainPinElement.style.left = MAIN_PIN.x + cssUnits;
+
+    inputAddress.value = getMainPinCoords();
 
     if (window.util.checkPopupPresence()) {
       window.card.close();
