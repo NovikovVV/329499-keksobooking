@@ -1,17 +1,32 @@
 'use strict';
 
 (function () {
+  var MAX_NUMBER_OF_PINS = 5;
   var MAP_PIN_X_OFFSET = 25;
   var MAP_PIN_Y_OFFSET = 70;
+  var VALUE_WITH_POPUP = 3;
+  var POPUP_INDEX = 1;
+  var map = document.querySelector('.map');
   var pinsArea = document.querySelector('.map__pins');
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var cssUnits = 'px';
+
+  var addPinListener = function (element, ad) {
+    element.addEventListener('click', function () {
+      if (map.children.length < VALUE_WITH_POPUP) {
+        window.card.create(ad);
+      } else {
+        map.removeChild(map.children[POPUP_INDEX]);
+        window.card.create(ad);
+      }
+    });
+  };
 
   window.pins = {
     create: function (ads) {
       var fragment = document.createDocumentFragment();
 
-      for (var i = 0; i < ads.length; i++) {
+      for (var i = 0; i < ads.length && i < MAX_NUMBER_OF_PINS; i++) {
         var mapPin = mapPinTemplate.cloneNode(true);
         var mapPinImg = mapPin.querySelector('img');
 
@@ -19,11 +34,17 @@
         mapPinImg.src = ads[i].author.avatar;
         mapPin.style.left = ads[i].location.x - MAP_PIN_X_OFFSET + cssUnits;
         mapPin.style.top = ads[i].location.y - MAP_PIN_Y_OFFSET + cssUnits;
+        addPinListener(mapPin, ads[i]);
 
         fragment.appendChild(mapPin);
       }
-
       pinsArea.appendChild(fragment);
+    },
+    delete: function () {
+      var mapPins = Array.from(document.querySelectorAll('.map__pin:not(.map__pin--main)'));
+      mapPins.forEach(function (it) {
+        pinsArea.removeChild(it);
+      });
     }
   };
 })();

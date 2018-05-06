@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MIN_NUMBER_OF_GUESTS = 0;
+  var MAX_NUMBER_OF_GUESTS = 100;
   var mainForm = document.querySelector('.ad-form');
   var successPopup = document.querySelector('.success');
   var successButton = document.querySelector('.success__button');
@@ -13,10 +15,12 @@
   var inputTimeOut = document.querySelector('#timeout');
   var inputNumberOfRooms = document.querySelector('#room_number');
   var inputGuestsCapacity = document.querySelector('#capacity');
-  var flatMinPrice = 1000;
-  var bungaloMinPrice = 0;
-  var houseMinPrice = 5000;
-  var palaceMinPrice = 10000;
+  var roomPriceMap = {
+    'flat': 1000,
+    'bungalo': 0,
+    'house': 5000,
+    'palace': 10000
+  };
 
   var onMainFormSuccess = function () {
     window.resetPage();
@@ -51,40 +55,26 @@
   resetButton.addEventListener('click', window.resetPage);
 
   window.form = {
-    onTimeInInputClick: function () {
+    onTimeInInputChange: function () {
       var time = inputTimeIn.value;
       inputTimeOut.value = time;
     },
-    onTimeOutInputClick: function () {
+    onTimeOutInputChange: function () {
       var time = inputTimeOut.value;
       inputTimeIn.value = time;
     },
-    onInputRoomTypeClick: function () {
-      switch (inputRoomType.value) {
-        case 'flat':
-          inputRoomPrice.placeholder = flatMinPrice;
-          inputRoomPrice.min = flatMinPrice;
-          break;
-        case 'bungalo':
-          inputRoomPrice.placeholder = bungaloMinPrice;
-          inputRoomPrice.min = bungaloMinPrice;
-          break;
-        case 'house':
-          inputRoomPrice.placeholder = houseMinPrice;
-          inputRoomPrice.min = houseMinPrice;
-          break;
-        case 'palace':
-          inputRoomPrice.placeholder = palaceMinPrice;
-          inputRoomPrice.min = palaceMinPrice;
-      }
+    onInputRoomTypeChange: function () {
+      var value = inputRoomType.value;
+      inputRoomPrice.placeholder = roomPriceMap[value];
+      inputRoomPrice.min = roomPriceMap[value];
     },
     setNumberOfGuests: function () {
       for (var i = 0; i < inputGuestsCapacity.length; i++) {
         inputGuestsCapacity[i].disabled = true;
-        if (inputNumberOfRooms.value === '100' && inputGuestsCapacity[i].value === '0') {
+        if (inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS.toString()) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
-        } else if (inputNumberOfRooms.value !== '100' && inputGuestsCapacity[i].value !== '0' && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
+        } else if (inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
         }
