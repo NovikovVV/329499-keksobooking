@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var MIN_NUMBER_OF_GUESTS = 0;
+  var MAX_NUMBER_OF_GUESTS = 100;
   var mainForm = document.querySelector('.ad-form');
   var successPopup = document.querySelector('.success');
   var successButton = document.querySelector('.success__button');
@@ -53,15 +55,15 @@
   resetButton.addEventListener('click', window.resetPage);
 
   window.form = {
-    onTimeInInputClick: function () {
+    onTimeInInputChange: function () {
       var time = inputTimeIn.value;
       inputTimeOut.value = time;
     },
-    onTimeOutInputClick: function () {
+    onTimeOutInputChange: function () {
       var time = inputTimeOut.value;
       inputTimeIn.value = time;
     },
-    onInputRoomTypeClick: function () {
+    onInputRoomTypeChange: function () {
       var value = inputRoomType.value;
       inputRoomPrice.placeholder = roomPriceMap[value];
       inputRoomPrice.min = roomPriceMap[value];
@@ -69,10 +71,10 @@
     setNumberOfGuests: function () {
       for (var i = 0; i < inputGuestsCapacity.length; i++) {
         inputGuestsCapacity[i].disabled = true;
-        if (inputNumberOfRooms.value === '100' && inputGuestsCapacity[i].value === '0') {
+        if (inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS.toString()) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
-        } else if (inputNumberOfRooms.value !== '100' && inputGuestsCapacity[i].value !== '0' && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
+        } else if (inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
         }
