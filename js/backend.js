@@ -3,10 +3,11 @@
 (function () {
   var TIMEOUT = 10000;
   var STATUS_OK = 200;
+  var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
+  var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
 
   window.backend = {
     load: function (onLoad, onError) {
-      var URL = 'https://js.dump.academy/keksobooking/data';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -25,11 +26,10 @@
       });
 
       xhr.timeout = TIMEOUT;
-      xhr.open('GET', URL);
+      xhr.open('GET', DOWNLOAD_URL);
       xhr.send();
     },
     save: function (data, onLoad, onError) {
-      var URL = 'https://js.dump.academy/keksobooking';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -49,7 +49,7 @@
       });
 
       xhr.timeout = TIMEOUT;
-      xhr.open('POST', URL);
+      xhr.open('POST', UPLOAD_URL);
       xhr.send(data);
     }
   };

@@ -23,7 +23,7 @@
   };
 
   var onMainFormSuccess = function () {
-    window.resetPage();
+    window.map.reset();
     successPopup.classList.remove('hidden');
     successButton.addEventListener('click', function () {
       successPopup.classList.add('hidden');
@@ -52,7 +52,7 @@
   };
 
   mainForm.addEventListener('submit', onMainFormSubmit);
-  resetButton.addEventListener('click', window.resetPage);
+  resetButton.addEventListener('click', window.map.reset);
 
   window.form = {
     onTimeInInputChange: function () {
