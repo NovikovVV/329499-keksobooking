@@ -55,12 +55,11 @@
         }
 
         featureTemplate.classList.remove(featureTemplate.classList[secondClassIndex]);
-        for (var i = 0; i < ad.offer.features.length; i++) {
+        ad.offer.features.forEach(function (it, i) {
           var featureItem = featureTemplate.cloneNode(true);
           featureItem.classList.add('popup__feature--' + ad.offer.features[i]);
           fragment.appendChild(featureItem);
-        }
-
+        });
         adCardFeatures.appendChild(fragment);
       };
 
@@ -77,11 +76,11 @@
           adCardPhotos.removeChild(adCardPhotos.firstChild);
         }
 
-        for (var i = 0; i < ad.offer.photos.length; i++) {
+        ad.offer.photos.forEach(function (it, i) {
           var photoItem = photoTemplate.cloneNode(true);
           photoItem.src = ad.offer.photos[i];
           fragment.appendChild(photoItem);
-        }
+        });
 
         adCardPhotos.appendChild(fragment);
       };
