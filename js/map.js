@@ -21,10 +21,6 @@
   var inputRoomType = document.querySelector('#type');
   var errorPopup = document.querySelector('.error');
   var errorButton = document.querySelector('.error__button');
-  var avatar = document.querySelector('.ad-form-header__preview img');
-  var defaultAvatar = 'img/muffin-grey.svg';
-  var roomPhotoContainer = document.querySelector('.ad-form__photo-container');
-  var roomPhotoIndex = 1;
   var mapBorders = {
     top: 150,
     right: map.getBoundingClientRect().right,
@@ -136,7 +132,7 @@
 
   window.map = {
     reset: function () {
-      avatar.src = defaultAvatar;
+      window.photo.delete();
       map.classList.add('map--faded');
       mainForm.reset();
       filters.reset();
@@ -157,10 +153,6 @@
 
       if (pinsArea.children.length > VALUE_WITHOUT_PINS) {
         window.pins.delete();
-      }
-
-      while (roomPhotoContainer.children.length > 1) {
-        roomPhotoContainer.removeChild(roomPhotoContainer.children[roomPhotoIndex]);
       }
     }
   };
