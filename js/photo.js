@@ -6,6 +6,7 @@
   var avatarPreview = document.querySelector('.ad-form-header__preview img');
   var roomPhotoChooser = document.querySelector('#images');
   var roomPhotoContainer = document.querySelector('.ad-form__photo-container');
+  var defaultAvatar = 'img/muffin-grey.svg';
   var firstFileIndex = 0;
 
   var onInputTypeFileChange = function (evt) {
@@ -21,7 +22,7 @@
 
       reader.addEventListener('load', function () {
         if (evt.target === roomPhotoChooser) {
-          roomPhotoContainer.appendChild(addRoomPhoto(reader));
+          roomPhotoContainer.appendChild(window.photo.add(reader));
           return;
         }
         avatarPreview.src = reader.result;
@@ -31,18 +32,28 @@
     reader.readAsDataURL(file);
   };
 
-  var addRoomPhoto = function (reader) {
-    var photoContainer = document.createElement('div');
-    var photo = document.createElement('img');
+  window.photo = {
+    add: function (reader) {
+      var photoContainer = document.createElement('div');
+      var photo = document.createElement('img');
 
-    photo.src = reader.result;
-    photo.width = 70;
-    photo.height = 70;
+      photo.src = reader.result;
+      photo.width = 70;
+      photo.height = 70;
 
-    photoContainer.classList.add('ad-form__photo');
-    photoContainer.appendChild(photo);
+      photoContainer.classList.add('ad-form__photo');
+      photoContainer.appendChild(photo);
 
-    return photoContainer;
+      return photoContainer;
+    },
+    delete: function () {
+      avatarPreview.src = defaultAvatar;
+
+      var photos = Array.from(document.querySelectorAll('.ad-form__photo'));
+      photos.forEach(function (it) {
+        roomPhotoContainer.removeChild(it);
+      });
+    }
   };
 
   avatarChooser.addEventListener('change', onInputTypeFileChange);
