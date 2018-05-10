@@ -55,9 +55,9 @@
         }
 
         featureTemplate.classList.remove(featureTemplate.classList[secondClassIndex]);
-        ad.offer.features.forEach(function (it, i) {
+        ad.offer.features.forEach(function (it) {
           var featureItem = featureTemplate.cloneNode(true);
-          featureItem.classList.add('popup__feature--' + ad.offer.features[i]);
+          featureItem.classList.add('popup__feature--' + it);
           fragment.appendChild(featureItem);
         });
         adCardFeatures.appendChild(fragment);
@@ -76,9 +76,9 @@
           adCardPhotos.removeChild(adCardPhotos.firstChild);
         }
 
-        ad.offer.photos.forEach(function (it, i) {
+        ad.offer.photos.forEach(function (it) {
           var photoItem = photoTemplate.cloneNode(true);
-          photoItem.src = ad.offer.photos[i];
+          photoItem.src = it;
           fragment.appendChild(photoItem);
         });
 

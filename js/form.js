@@ -71,10 +71,10 @@
     setNumberOfGuests: function () {
       for (var i = 0; i < inputGuestsCapacity.length; i++) {
         inputGuestsCapacity[i].disabled = true;
-        if (inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS.toString()) {
+        if (+inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
-        } else if (inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS.toString() && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
+        } else if (+inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
           inputGuestsCapacity[i].selected = true;
           inputGuestsCapacity[i].disabled = false;
         }
