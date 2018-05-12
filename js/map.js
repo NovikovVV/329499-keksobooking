@@ -7,11 +7,9 @@
     x: 570,
     y: 375
   };
-  var VALUE_WITHOUT_PINS = 2;
   var mainPinElement = document.querySelector('.map__pin--main');
   var cssUnits = 'px';
   var map = document.querySelector('.map');
-  var pinsArea = document.querySelector('.map__pins');
   var mainForm = document.querySelector('.ad-form');
   var filters = document.querySelector('.map__filters');
   var inputAddress = document.querySelector('input[name="address"]');
@@ -68,26 +66,12 @@
   };
 
   var onMainPinMouseUp = function () {
-    mainForm.classList.remove('ad-form--disabled');
-    window.util.setFormInputsState(mainForm, false);
-    window.util.setFormInputsState(filters, false);
-    inputRoomType.addEventListener('change', window.form.onInputRoomTypeChange);
-    inputTimeIn.addEventListener('change', window.form.onTimeInInputChange);
-    inputTimeOut.addEventListener('change', window.form.onTimeOutInputChange);
-    inputNumberOfRooms.addEventListener('change', window.form.setNumberOfGuests);
-
-    window.backend.load(onSuccess, onError);
-    map.classList.remove('map--faded');
-    mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
-
-    var filtersContainer = document.querySelector('.map__filters');
-    filtersContainer.addEventListener('change', function () {
-      window.util.debounce(window.filterOffers);
-    });
+    window.map.enable();
   };
 
   var onMainPinMouseDown = function (evtDown) {
     evtDown.preventDefault();
+
     var startCoords = {
       x: evtDown.clientX,
       y: evtDown.clientY
@@ -95,6 +79,10 @@
 
     var onMainPinDragStart = function (evtMove) {
       evtMove.preventDefault();
+
+      if (map.classList.contains('map--faded')) {
+        window.map.enable();
+      }
 
       var offset = {
         x: startCoords.x - evtMove.clientX,
@@ -104,18 +92,19 @@
       startCoords.x = evtMove.clientX;
       startCoords.y = evtMove.clientY;
 
-      if (startCoords.y > mapBorders.top && startCoords.y < mapBorders.bottom) {
+      if (evtMove.pageY > mapBorders.top && evtMove.pageY < mapBorders.bottom) {
         mainPinElement.style.top = (mainPinElement.offsetTop - offset.y) + cssUnits;
       }
       if (startCoords.x > mapBorders.left && startCoords.x < mapBorders.right) {
         mainPinElement.style.left = (mainPinElement.offsetLeft - offset.x) + cssUnits;
       }
+
+      inputAddress.value = getMainPinCoords();
     };
 
     var onMainPinDragEnd = function (evtEnd) {
       evtEnd.preventDefault();
 
-      inputAddress.value = getMainPinCoords();
       document.removeEventListener('mousemove', onMainPinDragStart);
       document.removeEventListener('mouseup', onMainPinDragEnd);
     };
@@ -124,13 +113,36 @@
     document.addEventListener('mouseup', onMainPinDragEnd);
   };
 
-  window.util.setFormInputsState(mainForm, true);
-  window.util.setFormInputsState(filters, true);
-  inputAddress.value = getMainPinCoords();
-  mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
-  mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
+  var setStartingState = function () {
+    window.util.setFormInputsState(mainForm, true);
+    window.util.setFormInputsState(filters, true);
+    inputAddress.value = getMainPinCoords();
+    mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
+    mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
+  };
+
+  setStartingState();
 
   window.map = {
+    enable: function () {
+      mainForm.classList.remove('ad-form--disabled');
+      window.util.setFormInputsState(mainForm, false);
+      window.util.setFormInputsState(filters, false);
+      inputRoomType.addEventListener('change', window.form.onInputRoomTypeChange);
+      inputTimeIn.addEventListener('change', window.form.onTimeInInputChange);
+      inputTimeOut.addEventListener('change', window.form.onTimeOutInputChange);
+      inputNumberOfRooms.addEventListener('change', window.form.setNumberOfGuests);
+
+      window.backend.load(onSuccess, onError);
+      map.classList.remove('map--faded');
+      inputAddress.value = getMainPinCoords();
+      mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
+
+      var filtersContainer = document.querySelector('.map__filters');
+      filtersContainer.addEventListener('change', function () {
+        window.util.debounce(window.filterOffers);
+      });
+    },
     reset: function () {
       window.photo.delete();
       map.classList.add('map--faded');
@@ -151,7 +163,7 @@
         window.card.close();
       }
 
-      if (pinsArea.children.length > VALUE_WITHOUT_PINS) {
+      if (window.util.checkPinsPresense()) {
         window.pins.delete();
       }
     }

@@ -4,19 +4,16 @@
   var MAX_NUMBER_OF_PINS = 5;
   var MAP_PIN_X_OFFSET = 25;
   var MAP_PIN_Y_OFFSET = 70;
-  var VALUE_WITH_POPUP = 3;
-  var POPUP_INDEX = 1;
-  var map = document.querySelector('.map');
   var pinsArea = document.querySelector('.map__pins');
   var mapPinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var cssUnits = 'px';
 
   var addPinListener = function (element, ad) {
     element.addEventListener('click', function () {
-      if (map.children.length < VALUE_WITH_POPUP) {
+      if (!window.util.checkPopupPresence()) {
         window.card.create(ad);
       } else {
-        map.removeChild(map.children[POPUP_INDEX]);
+        window.card.close();
         window.card.create(ad);
       }
     });

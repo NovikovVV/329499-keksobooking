@@ -32,6 +32,9 @@
     reader.readAsDataURL(file);
   };
 
+  avatarChooser.addEventListener('change', onInputTypeFileChange);
+  roomPhotoChooser.addEventListener('change', onInputTypeFileChange);
+
   window.photo = {
     add: function (reader) {
       var photoContainer = document.createElement('div');
@@ -55,7 +58,4 @@
       });
     }
   };
-
-  avatarChooser.addEventListener('change', onInputTypeFileChange);
-  roomPhotoChooser.addEventListener('change', onInputTypeFileChange);
 })();

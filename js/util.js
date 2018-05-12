@@ -22,6 +22,9 @@
     },
     checkPopupPresence: function () {
       return !!document.querySelector('.popup');
+    },
+    checkPinsPresense: function () {
+      return !!document.querySelectorAll('.map__pin:not(.map__pin--main)');
     }
   };
 })();
