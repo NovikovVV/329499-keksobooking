@@ -149,15 +149,10 @@
       mainForm.reset();
       filters.reset();
       mainForm.classList.add('ad-form--disabled');
-      window.util.setFormInputsState(mainForm, true);
-      window.util.setFormInputsState(filters, true);
-      mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
-      mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
-
       mainPinElement.style.top = MAIN_PIN.y + cssUnits;
       mainPinElement.style.left = MAIN_PIN.x + cssUnits;
 
-      inputAddress.value = getMainPinCoords();
+      setStartingState();
 
       if (window.util.checkPopupPresence()) {
         window.card.close();
