@@ -61,7 +61,7 @@
     if (window.util.checkPopupPresence()) {
       window.card.close();
     }
-    window.pins.delete();
+    window.pins.remove();
     window.pins.create(filteredAds);
   };
 })();

@@ -51,34 +51,42 @@
     evt.preventDefault();
   };
 
+  var onTimeInInputChange = function () {
+    var time = inputTimeIn.value;
+    inputTimeOut.value = time;
+  };
+
+  var onTimeOutInputChange = function () {
+    var time = inputTimeOut.value;
+    inputTimeIn.value = time;
+  };
+
+  var onInputRoomTypeChange = function () {
+    var value = inputRoomType.value;
+    inputRoomPrice.placeholder = roomPriceMap[value];
+    inputRoomPrice.min = roomPriceMap[value];
+  };
+
+  var setNumberOfGuests = function () {
+    for (var i = 0; i < inputGuestsCapacity.length; i++) {
+      inputGuestsCapacity[i].disabled = true;
+      if (+inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS) {
+        inputGuestsCapacity[i].selected = true;
+        inputGuestsCapacity[i].disabled = false;
+      } else if (+inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
+        inputGuestsCapacity[i].selected = true;
+        inputGuestsCapacity[i].disabled = false;
+      }
+    }
+  };
+
   mainForm.addEventListener('submit', onMainFormSubmit);
   resetButton.addEventListener('click', window.map.reset);
 
   window.form = {
-    onTimeInInputChange: function () {
-      var time = inputTimeIn.value;
-      inputTimeOut.value = time;
-    },
-    onTimeOutInputChange: function () {
-      var time = inputTimeOut.value;
-      inputTimeIn.value = time;
-    },
-    onInputRoomTypeChange: function () {
-      var value = inputRoomType.value;
-      inputRoomPrice.placeholder = roomPriceMap[value];
-      inputRoomPrice.min = roomPriceMap[value];
-    },
-    setNumberOfGuests: function () {
-      for (var i = 0; i < inputGuestsCapacity.length; i++) {
-        inputGuestsCapacity[i].disabled = true;
-        if (+inputNumberOfRooms.value === MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value === MIN_NUMBER_OF_GUESTS) {
-          inputGuestsCapacity[i].selected = true;
-          inputGuestsCapacity[i].disabled = false;
-        } else if (+inputNumberOfRooms.value !== MAX_NUMBER_OF_GUESTS && +inputGuestsCapacity[i].value !== MIN_NUMBER_OF_GUESTS && inputGuestsCapacity[i].value <= inputNumberOfRooms.value) {
-          inputGuestsCapacity[i].selected = true;
-          inputGuestsCapacity[i].disabled = false;
-        }
-      }
-    }
+    onTimeInInputChange: onTimeInInputChange,
+    onTimeOutInputChange: onTimeOutInputChange,
+    onInputRoomTypeChange: onInputRoomTypeChange,
+    setNumberOfGuests: setNumberOfGuests
   };
 })();

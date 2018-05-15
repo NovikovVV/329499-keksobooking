@@ -114,53 +114,57 @@
   };
 
   var setStartingState = function () {
-    window.util.setFormInputsState(mainForm, true);
-    window.util.setFormInputsState(filters, true);
+    window.util.setFormInputsDisableState(mainForm, true);
+    window.util.setFormInputsDisableState(filters, true);
     inputAddress.value = getMainPinCoords();
     mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
     mainPinElement.addEventListener('mouseup', onMainPinMouseUp);
   };
 
+  var enable = function () {
+    mainForm.classList.remove('ad-form--disabled');
+    window.util.setFormInputsDisableState(mainForm, false);
+    window.util.setFormInputsDisableState(filters, false);
+    inputRoomType.addEventListener('change', window.form.onInputRoomTypeChange);
+    inputTimeIn.addEventListener('change', window.form.onTimeInInputChange);
+    inputTimeOut.addEventListener('change', window.form.onTimeOutInputChange);
+    inputNumberOfRooms.addEventListener('change', window.form.setNumberOfGuests);
+
+    window.backend.load(onSuccess, onError);
+    map.classList.remove('map--faded');
+    inputAddress.value = getMainPinCoords();
+    mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
+
+    var filtersContainer = document.querySelector('.map__filters');
+    filtersContainer.addEventListener('change', function () {
+      window.util.debounce(window.filterOffers);
+    });
+  };
+
+  var reset = function () {
+    window.photo.remove();
+    map.classList.add('map--faded');
+    mainForm.reset();
+    filters.reset();
+    mainForm.classList.add('ad-form--disabled');
+    mainPinElement.style.top = MAIN_PIN.y + cssUnits;
+    mainPinElement.style.left = MAIN_PIN.x + cssUnits;
+
+    setStartingState();
+
+    if (window.util.checkPopupPresence()) {
+      window.card.close();
+    }
+
+    if (window.util.checkPinsPresense()) {
+      window.pins.remove();
+    }
+  };
+
   setStartingState();
 
   window.map = {
-    enable: function () {
-      mainForm.classList.remove('ad-form--disabled');
-      window.util.setFormInputsState(mainForm, false);
-      window.util.setFormInputsState(filters, false);
-      inputRoomType.addEventListener('change', window.form.onInputRoomTypeChange);
-      inputTimeIn.addEventListener('change', window.form.onTimeInInputChange);
-      inputTimeOut.addEventListener('change', window.form.onTimeOutInputChange);
-      inputNumberOfRooms.addEventListener('change', window.form.setNumberOfGuests);
-
-      window.backend.load(onSuccess, onError);
-      map.classList.remove('map--faded');
-      inputAddress.value = getMainPinCoords();
-      mainPinElement.removeEventListener('mouseup', onMainPinMouseUp);
-
-      var filtersContainer = document.querySelector('.map__filters');
-      filtersContainer.addEventListener('change', function () {
-        window.util.debounce(window.filterOffers);
-      });
-    },
-    reset: function () {
-      window.photo.delete();
-      map.classList.add('map--faded');
-      mainForm.reset();
-      filters.reset();
-      mainForm.classList.add('ad-form--disabled');
-      mainPinElement.style.top = MAIN_PIN.y + cssUnits;
-      mainPinElement.style.left = MAIN_PIN.x + cssUnits;
-
-      setStartingState();
-
-      if (window.util.checkPopupPresence()) {
-        window.card.close();
-      }
-
-      if (window.util.checkPinsPresense()) {
-        window.pins.delete();
-      }
-    }
+    enable: enable,
+    reset: reset
   };
 })();
